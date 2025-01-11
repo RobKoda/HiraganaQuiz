@@ -1,0 +1,46 @@
+﻿@page "/Hiraganas"
+@using HiraganaQuiz.Apps
+@using HiraganaQuiz.Blazor.Shared
+
+@inject BasicGame BasicGame
+
+<PageTitle>Hiraganas</PageTitle>
+
+<h2 style="font-size: 8rem; font-family: @CurrentFont">@Prompt</h2>
+<InputText @bind-Value="@UserInput" @onkeyup="OnKeyUp" style="font-size: 8rem"/>
+
+@code {
+    private string Prompt { get; set; } = string.Empty;
+    private string Answer { get; set; } = string.Empty;
+    private string UserInput { get; set; } = string.Empty;
+    private string CurrentFont { get; set; } = string.Empty;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        ResetPrompt();
+    }
+
+    private void ResetPrompt()
+    {
+        var (prompt, answer) = BasicGame.GetNextPrompt();
+        Prompt = prompt;
+        Answer = answer;
+
+        RandomizeFont();
+    }
+
+    private void RandomizeFont() => CurrentFont = FontProvider.GetRandomFont();
+
+    private void OnKeyUp(KeyboardEventArgs keyboardEventArgs)
+    {
+        if (keyboardEventArgs.Code is not ("Enter" or "NumpadEnter")) return;
+        
+        if (string.Equals(Answer, UserInput, StringComparison.InvariantCultureIgnoreCase))
+        {
+            ResetPrompt();
+        }
+        UserInput = string.Empty;
+    }
+}
