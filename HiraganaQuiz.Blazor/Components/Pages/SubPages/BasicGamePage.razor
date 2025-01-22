@@ -1,0 +1,54 @@
+﻿@using HiraganaQuiz.Apps
+@using HiraganaQuiz.Blazor.Shared
+
+@inject BasicGame BasicGame
+
+@if (Visible)
+{
+    <button @onclick="@OnResetSelectionClicked">Reset selection</button>
+    <h2 style="font-size: 8rem; font-family: @_currentFont">@_prompt</h2>
+    <InputText @bind-Value="@_userInput" @onkeyup="OnKeyUp" style="font-size: 8rem"/>    
+}
+
+@code {
+    [Parameter] public Action? OnSelectionRequestedCallback { get; set; }
+    [Parameter] public bool Visible { get; set; }
+    
+    private string _prompt = string.Empty;
+    private string _answer = string.Empty;
+    private string _userInput = string.Empty;
+    private string _currentFont = string.Empty;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ResetPrompt();    
+    }
+
+    private void ResetPrompt()
+    {
+        var (prompt, answer) = BasicGame.GetNextPrompt();
+        _prompt = prompt;
+        _answer = answer;
+
+        RandomizeFont();
+    }
+
+    private void RandomizeFont() => _currentFont = FontProvider.GetRandomFont();
+
+    private void OnKeyUp(KeyboardEventArgs keyboardEventArgs)
+    {
+        if (keyboardEventArgs.Code is not ("Enter" or "NumpadEnter")) return;
+        
+        if (string.Equals(_answer, _userInput, StringComparison.InvariantCultureIgnoreCase))
+        {
+            ResetPrompt();
+        }
+        _userInput = string.Empty;
+    }
+
+    private void OnResetSelectionClicked() => OnSelectionRequestedCallback?.Invoke();
+
+    public void NotifySelectionDone() => ResetPrompt();
+
+}

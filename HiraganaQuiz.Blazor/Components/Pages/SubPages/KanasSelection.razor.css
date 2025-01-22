@@ -1,0 +1,16 @@
+﻿.selectable-item {
+    cursor: pointer;
+    padding: 8px;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #ccc;
+    width: 20%;
+    list-style-type: none;
+    display: inline-block;
+    font-size: 3rem;
+}
+
+.selectable-item.selected {
+    background-color: #d1e7dd;
+    border-color: #0f5132;
+}

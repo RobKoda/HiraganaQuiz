@@ -1,7 +1,6 @@
-﻿using HiraganaQuiz.Shared;
+﻿namespace HiraganaQuiz.Models;
 
-namespace HiraganaQuiz.Models;
-
+// ReSharper disable MemberCanBePrivate.Global - Accessed by code
 public static class HiraganaToRomajis
 {
     public static readonly Dictionary<string, string> HiraganaVowels = new()
@@ -34,24 +33,6 @@ public static class HiraganaToRomajis
         { {"ら", "ra"}, {"り", "ri"}, {"る", "ru"}, {"れ", "re"}, {"ろ", "ro"} };
     public static readonly Dictionary<string, string> HiraganaW = new()
         { {"わ", "wa"}, {"を", "wo"}, {"ん", "n"} };
-
-    public static Dictionary<string, string> HiraganaBasics =>
-        HiraganaVowels
-            .Concat(HiraganaK)
-            .Concat(HiraganaG)
-            .Concat(HiraganaS)
-            .Concat(HiraganaZ)
-            .Concat(HiraganaT)
-            .Concat(HiraganaD)
-            .Concat(HiraganaN)
-            .Concat(HiraganaH)
-            .Concat(HiraganaB)
-            .Concat(HiraganaP)
-            .Concat(HiraganaM)
-            .Concat(HiraganaY)
-            .Concat(HiraganaR)
-            .Concat(HiraganaW)
-            .ToCustomDictionary();
     
     public static readonly Dictionary<string, string> HiraganaKi = new()
         { {"きゃ", "kya"}, {"きゅ", "kyu"}, {"きょ", "kyo"} };
@@ -76,22 +57,37 @@ public static class HiraganaToRomajis
     public static readonly Dictionary<string, string> HiraganaRi = new()
         { {"りゃ", "rya"}, {"りゅ", "ryu"}, {"りょ", "ryo"} };
 
-    public static Dictionary<string, string> HiraganaCombined =>
-        HiraganaKi
-            .Concat(HiraganaGi)
-            .Concat(HiraganaShi)
-            .Concat(HiraganaJi)
-            .Concat(HiraganaChi)
-            .Concat(HiraganaNi)
-            .Concat(HiraganaHi)
-            .Concat(HiraganaBi)
-            .Concat(HiraganaPi)
-            .Concat(HiraganaMi)
-            .Concat(HiraganaRi)
-            .ToCustomDictionary();
+    public static IEnumerable<Dictionary<string, string>> HiraganaBasics =>
+    [
+        HiraganaVowels,
+        HiraganaK,
+        HiraganaG,
+        HiraganaS,
+        HiraganaZ,
+        HiraganaT,
+        HiraganaD,
+        HiraganaN,
+        HiraganaH,
+        HiraganaB,
+        HiraganaP,
+        HiraganaM,
+        HiraganaY,
+        HiraganaR,
+        HiraganaW
+    ];
 
-    public static Dictionary<string, string> HiraganaAll =>
-        HiraganaBasics
-            .Concat(HiraganaCombined)
-            .ToCustomDictionary();
+    public static IEnumerable<Dictionary<string, string>> HiraganaCombined =>
+    [
+        HiraganaKi,
+        HiraganaGi,
+        HiraganaShi,
+        HiraganaJi,
+        HiraganaChi,
+        HiraganaNi,
+        HiraganaHi,
+        HiraganaBi,
+        HiraganaPi,
+        HiraganaMi,
+        HiraganaRi
+    ];
 }

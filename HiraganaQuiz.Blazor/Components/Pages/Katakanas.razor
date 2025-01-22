@@ -1,10 +1,10 @@
-﻿@page "/Hiraganas"
+﻿@page "/Katakanas"
 @using HiraganaQuiz.Blazor.Components.Pages.SubPages
 @using HiraganaQuiz.Models
 
-<PageTitle>Hiraganas</PageTitle>
+<PageTitle>Katakanas</PageTitle>
 
-<KanasSelection DictionaryType="@typeof(HiraganaToRomajis)" KanasBasics="@HiraganaToRomajis.HiraganaBasics" KanasCombined="@HiraganaToRomajis.HiraganaCombined" OnSelectionDoneCallback="@OnSelectionDone" Visible="@_isConfiguringGame"/>
+<KanasSelection DictionaryType="@typeof(KatakanaToRomajis)" KanasBasics="@KatakanaToRomajis.KatakanaBasics" KanasCombined="@KatakanaToRomajis.KatakanaCombined" OnSelectionDoneCallback="@OnSelectionDone" Visible="@_isConfiguringGame"/>
 <BasicGamePage OnSelectionRequestedCallback="@OnSelectionRequested" @ref="BasicGamePage" Visible="@(!_isConfiguringGame)"/>
 
 @code {

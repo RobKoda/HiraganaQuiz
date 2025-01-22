@@ -1,0 +1,94 @@
+﻿@using System.Reflection
+@using HiraganaQuiz.Apps
+@using HiraganaQuiz.Shared
+
+@inject BasicGame BasicGame
+
+@if (Visible)
+{
+    <button @onclick="@OnValidateSelectionClicked" style="margin-bottom: 20px" disabled="@(!BasicGame.SelectedKanaGroups.Any())">Validate selection</button>
+    <br/>
+    <button @onclick="OnBasicsClicked" style="margin-bottom: 20px">Basics</button>
+    <button @onclick="OnCombinedClicked" style="margin-bottom: 20px">Combined</button>
+    <button @onclick="OnAllClicked" style="margin-bottom: 20px">All</button>
+    <button @onclick="OnNoneClicked" style="margin-bottom: 20px">None</button>
+
+    <ul>
+        @foreach (var kanaGroup in _kanaGroups)
+        {
+            <li @onclick="() => ToggleSelection(kanaGroup)"
+                class="selectable-item @(BasicGame.SelectedKanaGroups.Contains(kanaGroup) ? "selected" : "")">
+                @kanaGroup.GetDisplayName()
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter] public Type DictionaryType { get; set; } = null!;
+    
+    [Parameter] public IEnumerable<Dictionary<string,string>>? KanasBasics { get; set; }
+    [Parameter] public IEnumerable<Dictionary<string,string>>? KanasCombined { get; set; }
+    
+    [Parameter] public Action? OnSelectionDoneCallback { get; set; }
+    [Parameter] public bool Visible { get; set; }
+
+    private readonly List<Dictionary<string, string>> _kanaGroups = [];
+    private void OnValidateSelectionClicked() => OnSelectionDoneCallback?.Invoke();
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        InitializeSelectionList();
+    }
+
+    private void InitializeSelectionList()
+    {
+        _kanaGroups.Clear();
+        
+        var fields = DictionaryType.GetFields(BindingFlags.Static | BindingFlags.Public);
+        foreach (var field in fields)
+        {
+            _kanaGroups.Add((field.GetValue(null) as Dictionary<string, string>)!);
+        }
+    }
+
+    private void ToggleSelection(Dictionary<string, string> item)
+    {
+        if (BasicGame.SelectedKanaGroups.Contains(item))
+        {
+            BasicGame.SelectedKanaGroups.Remove(item);
+        }
+        else
+        {
+            BasicGame.SelectedKanaGroups.Add(item);
+        }
+    }
+
+    private void OnBasicsClicked()
+    {
+        if (KanasBasics == null) return;
+        
+        var groupsToAdd =
+            KanasBasics.Where(group => !BasicGame.SelectedKanaGroups.Contains(group));
+        BasicGame.SelectedKanaGroups.AddRange(groupsToAdd);
+    }
+
+    private void OnCombinedClicked()
+    {
+        if (KanasCombined == null) return;
+        
+        var groupsToAdd =
+            KanasCombined.Where(group => !BasicGame.SelectedKanaGroups.Contains(group));
+        BasicGame.SelectedKanaGroups.AddRange(groupsToAdd);
+    }
+
+    private void OnAllClicked()
+    {
+        var groupsToAdd = _kanaGroups.Where(group => !BasicGame.SelectedKanaGroups.Contains(group));
+        BasicGame.SelectedKanaGroups.AddRange(groupsToAdd);
+    }
+
+    private void OnNoneClicked() => BasicGame.SelectedKanaGroups.Clear();
+
+}
